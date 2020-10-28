@@ -1,0 +1,27 @@
+package com.atguigu.value
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+object value06_groupby {
+  def main(args: Array[String]): Unit = {
+    //1.创建SparkConf并设置App名称
+    val conf: SparkConf = new SparkConf().setAppName("SparkCoreTest").setMaster("local[*]")
+
+    //2.创建SparkContext，该对象是提交Spark App的入口
+    val sc: SparkContext = new SparkContext(conf)
+
+    val rdd: RDD[String] = sc.makeRDD(List("hello","hive","hadoop","spark","scala"))
+
+    val groupRDD: RDD[(String, Iterable[String])] = rdd.groupBy(word => word.substring(0,1))
+
+    groupRDD.collect().foreach(data => {
+      println(data._1)
+      for (elem <- data._2) {print(elem + " ")}
+      println()
+    })
+
+    //4.关闭连接
+    sc.stop()
+  }
+}
